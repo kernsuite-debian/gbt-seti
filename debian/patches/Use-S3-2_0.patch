@@ -1,0 +1,156 @@
+Description: Ubuntu is bundled with libs3 2.0
+
+--- gbt-seti-0+git20180315.orig/src/s3test.c
++++ gbt-seti-0+git20180315/src/s3test.c
+@@ -58,9 +58,16 @@ int main(int argc, char **argv)
+ 
+     printf("attempting bucket create...%s %s %d\n", secretAccessKeyG, accessKeyIdG, retriesG);
+     do {
++#ifdef USE_LIBS3_20
++        S3_create_bucket(protocolG, accessKeyIdG, secretAccessKeyG, 0,
++                         bucketName, cannedAcl, locationConstraint,
++                         0, &responseHandler, 0);
++
++#else
+         S3_create_bucket(protocolG, accessKeyIdG, secretAccessKeyG, 0, 0,
+                          bucketName, awsRegionG, cannedAcl, locationConstraint,
+                          0, 0, &responseHandler, 0);
++#endif
+         printf("%s\n", S3_get_status_name(statusG));
+     } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+@@ -143,8 +150,12 @@ int main(int argc, char **argv)
+ 
+ 
+         do {
+-            S3_put_object(&bucketContext, key, contentLength, &putProperties, 0,
+-                          0, &putObjectHandler, &data);
++
++#ifdef USE_LIBS3_20
++            S3_put_object(&bucketContext, key, contentLength, &putProperties, 0, &putObjectHandler, &data);
++#else
++            S3_put_object(&bucketContext, key, contentLength, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
+         } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 
+@@ -174,8 +185,12 @@ int main(int argc, char **argv)
+ 				contentLength;
+ 
+       do {
+-            S3_put_object(&bucketContext, key, contentLength, &putProperties, 0,
+-                          0, &putObjectHandler, &data);
++#ifdef USE_LIBS3_20
++            S3_put_object(&bucketContext, key, contentLength, &putProperties, 0, &putObjectHandler, &data);
++#else
++            S3_put_object(&bucketContext, key, contentLength, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
++
+         } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 
+@@ -189,4 +204,4 @@ int main(int argc, char **argv)
+ 
+ 
+     return 0;
+-}
+\ No newline at end of file
++}
+--- gbt-seti-0+git20180315.orig/src/s3util.c
++++ gbt-seti-0+git20180315/src/s3util.c
+@@ -281,7 +281,7 @@ S3Status responsePropertiesCallback (con
+         printf("x-amz-meta-%s: %s\n", properties->metaData[i].name,
+                properties->metaData[i].value);
+     }
+-#ifdef HAS_USESSERVERSIDEENCRYPTION
++#ifndef USE_LIBS3_20
+     if (properties->usesServerSideEncryption) {
+         printf("UsesServerSideEncryption: true\n");
+     }
+--- a/src/filterbankutil.c
++++ b/src/filterbankutil.c
+@@ -588,8 +588,11 @@ long int candsearch_doppler(float thresh, struct filterbank_input *input, struct
+ 						   fitslen;
+ 
+ 				   do {
+-					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0,
+-									 0, &putObjectHandler, &data);
++#ifdef USE_LIBS3_20
++				           S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, &putObjectHandler, &data);
++#else
++					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
+ 				   } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 
+@@ -631,8 +634,11 @@ long int candsearch_doppler(float thresh, struct filterbank_input *input, struct
+ 						   fitslen;
+ 					
+ 				   do {
+-					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0,
+-									 0, &putObjectHandler, &data);
++#ifdef USE_LIBS3_20
++                                           S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, &putObjectHandler, &data);
++#else
++                                           S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
+ 				   } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 				   if (statusG != S3StatusOK) {
+@@ -941,8 +947,11 @@ long int candsearch_doppler_mongo(float thresh, struct filterbank_input *input,
+ 						   fitslen;
+ 
+ 				   do {
+-					   S3_put_object(&bucketContext, onfitsname, fitslen, &putProperties, 0,
+-									 0, &putObjectHandler, &data);
++#ifdef USE_LIBS3_20
++                                           S3_put_object(&bucketContext, onfitsname, fitslen, &putProperties, 0, &putObjectHandler, &data);
++#else
++                                           S3_put_object(&bucketContext, onfitsname, fitslen, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
+ 				   } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 
+@@ -990,8 +999,11 @@ long int candsearch_doppler_mongo(float thresh, struct filterbank_input *input,
+ 						   fitslen;
+ 					
+ 				   do {
+-					   S3_put_object(&bucketContext, offfitsname, fitslen, &putProperties, 0,
+-									 0, &putObjectHandler, &data);
++#ifdef USE_LIBS3_20
++                                           S3_put_object(&bucketContext, offfitsname, fitslen, &putProperties, 0, &putObjectHandler, &data);
++#else
++                                           S3_put_object(&bucketContext, offfitsname, fitslen, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
+ 				   } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 				   if (statusG != S3StatusOK) {
+@@ -1226,8 +1238,12 @@ long int candsearch_onoff(float *diff_spectrum, long int candwidth, float thresh
+ 						   fitslen;
+ 
+ 				   do {
+-					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0,
+-									 0, &putObjectHandler, &data);
++#ifdef USE_LIBS3_20
++					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, &putObjectHandler, &data);
++#else
++					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
++
+ 				   } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 
+@@ -1259,8 +1275,11 @@ long int candsearch_onoff(float *diff_spectrum, long int candwidth, float thresh
+ 						   fitslen;
+ 					
+ 				   do {
+-					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0,
+-									 0, &putObjectHandler, &data);
++#ifdef USE_LIBS3_20
++				           S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, &putObjectHandler, &data);
++#else
++					   S3_put_object(&bucketContext, fitsname, fitslen, &putProperties, 0, 0, &putObjectHandler, &data);
++#endif
+ 				   } while (S3_status_is_retryable(statusG) && should_retry());
+ 
+ 				   if (statusG != S3StatusOK) {

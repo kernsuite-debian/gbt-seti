@@ -1,0 +1,28 @@
+Description: Fix compile flags and install prefixes
+
+--- gbt-seti-0+git20180315.orig/src/Makefile
++++ gbt-seti-0+git20180315/src/Makefile
+@@ -2,12 +2,11 @@ OPT64 = /opt/vegas
+ FC = gfortran
+ FFLAGS = -g -fPIC
+ OS = Linux
+-# Default to installing in /usr/local/listen
+-SETI_GBT ?= /usr/local/listen
++SETI_GBT ?= $(DESTDIR)/usr
+ prefix ?= $(SETI_GBT)
+ BINDIR = $(prefix)/bin
+ LIBDIR = $(prefix)/lib
+-CUDA = /usr/local/cuda
++CUDA = /usr
+ CUDAC = $(CUDA)/bin/nvcc
+ # Linux is the first choice
+ ifeq ($(OS),Linux)
+@@ -20,7 +19,7 @@ else
+ endif
+ 
+ CUDAFLAGS = --std=c++11 
+-CFLAGS = -Wno-unused-result -O3 -Wall -Werror=return-local-addr -DFOLD_USE_INTRINSICS -I$(OPT64)/include -I/usr/include/cfitsio -I/usr/include/mysql -I$(CUDA)/include -I/usr/local/include -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0
++CFLAGS = -Wno-unused-result -O3 -Wall -Werror=return-local-addr -DUSE_LIBS3_20 -DFOLD_USE_INTRINSICS -I$(OPT64)/include -I/usr/include/cfitsio -I/usr/include/mysql -I$(CUDA)/include -I/usr/include/libbson-1.0 -I/usr/include/libmongoc-1.0
+ PROGS = test_psrfits_read \
+ 	raw_quant raw_read massage_vpm \
+ 	treedop raw_head two2eight filterbanksearch s3test filterbanksearchdoppler baryacc

@@ -1,0 +1,13 @@
+Description: Fix inline semantics
+
+--- gbt-seti-0+git20180315.orig/src/raw_quant.c
++++ gbt-seti-0+git20180315/src/raw_quant.c
+@@ -15,7 +15,7 @@ extern void guppi_read_obs_params(char *
+                                      struct psrfits *p);
+ 
+ 
+-inline int quantize_2bit(struct psrfits *pf, double * mean, double * std);
++extern int quantize_2bit(struct psrfits *pf, double * mean, double * std);
+ 
+ int compute_stat(struct psrfits *pf, double *mean, double *std);
+ 

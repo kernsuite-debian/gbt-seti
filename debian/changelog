@@ -1,0 +1,5 @@
+gbt-seti (0+git20180315-1kern1) bionic; urgency=low
+
+  * Initial release. 
+
+ -- KERN packaging <packaging@kernsuite.info>  Tue, 27 Mar 2018 09:40:40 +0000

@@ -1,0 +1,4 @@
+# You must remove unused comment lines for the released package.
+Use-S3-2_0.patch
+Fix-inline-semantics.patch
+Fix-makefile.patch
