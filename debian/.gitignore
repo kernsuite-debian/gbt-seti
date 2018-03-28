@@ -1,0 +1,5 @@
+.debhelper/
+files
+gbt-seti.debhelper.log
+gbt-seti.substvars
+gbt-seti/
