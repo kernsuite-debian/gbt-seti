@@ -1,3 +1,12 @@
+gbt-seti (0.0~git20180503.f42056b-1) bionic; urgency=medium
+
+  [ Gijs Molenaar ]
+  * switch to new watch style
+  * New upstream version 0.0~git20180503.f42056b
+  * don't install slalib and listen.sh
+
+ -- KERN packaging <packaging@kernsuite.info>  Fri, 17 Aug 2018 13:14:01 +0200
+
 gbt-seti (0+git20180315-1kern1) bionic; urgency=low
 
   * Initial release. 
