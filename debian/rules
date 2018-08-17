@@ -3,7 +3,3 @@
 %:
 	dh $@ --sourcedirectory=src --parallel
 
-override_dh_auto_install:
-	dh_auto_install
-	rm debian/gbt-seti/usr/lib/libsla.so
-

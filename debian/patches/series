@@ -2,3 +2,4 @@
 Use-S3-2_0.patch
 Fix-inline-semantics.patch
 Fix-makefile.patch
+Dont-install-slalib-and-script.patch
